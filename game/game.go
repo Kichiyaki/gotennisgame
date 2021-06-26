@@ -49,8 +49,13 @@ func (g *game) init() error {
 }
 
 func (g *game) Update() error {
-	windowWidth, windowHeight := ebiten.WindowSize()
+	g.updatePlayerPosition()
+	g.updateBallPosition()
+	return nil
+}
 
+func (g *game) updatePlayerPosition() {
+	windowWidth, _ := ebiten.WindowSize()
 	cursorX, _ := ebiten.CursorPosition()
 	newPlayerX := float64(cursorX) - float64(paddleWidth)/2
 	if newPlayerX < 0 {
@@ -59,7 +64,10 @@ func (g *game) Update() error {
 		newPlayerX = float64(windowWidth) - float64(paddleWidth)
 	}
 	g.playerPaddle.setX(newPlayerX)
+}
 
+func (g *game) updateBallPosition() {
+	windowWidth, windowHeight := ebiten.WindowSize()
 	ballWidth, ballHeight := g.ball.Size()
 	ballX := g.ball.getX()
 	centerBallX := ballX + float64(ballWidth)/2
@@ -74,8 +82,6 @@ func (g *game) Update() error {
 	}
 	g.ball.setX(ballX + g.ball.velocity.getX())
 	g.ball.setY(ballY + g.ball.velocity.getY())
-
-	return nil
 }
 
 func (g *game) Draw(screen *ebiten.Image) {
