@@ -7,9 +7,14 @@ import (
 	"github.com/Kichiyaki/gotennisgame/game/assets"
 )
 
+const (
+	defaultBallVelocity = 2
+)
+
 type ball struct {
 	*ebiten.Image
 	*coords
+	velocity *velocity
 }
 
 func newBall(x, y float64) (*ball, error) {
@@ -22,6 +27,12 @@ func newBall(x, y float64) (*ball, error) {
 		coords: &coords{
 			x: x,
 			y: y,
+		},
+		velocity: &velocity{
+			&coords{
+				x: defaultBallVelocity,
+				y: defaultBallVelocity,
+			},
 		},
 	}, nil
 }

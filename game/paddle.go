@@ -31,3 +31,7 @@ func newPaddle(x, y float64) *paddle {
 		},
 	}
 }
+
+func (p *paddle) isPointInBoundaries(x, y float64) bool {
+	return y > p.getY() && y < p.getY()+paddleHeight && x > p.getX() && x < p.getX()+paddleWidth
+}

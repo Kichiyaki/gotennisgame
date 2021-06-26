@@ -49,7 +49,7 @@ func (g *game) init() error {
 }
 
 func (g *game) Update() error {
-	windowWidth, _ := ebiten.WindowSize()
+	windowWidth, windowHeight := ebiten.WindowSize()
 
 	cursorX, _ := ebiten.CursorPosition()
 	newPlayerX := float64(cursorX) - float64(paddleWidth)/2
@@ -59,6 +59,21 @@ func (g *game) Update() error {
 		newPlayerX = float64(windowWidth) - float64(paddleWidth)
 	}
 	g.playerPaddle.setX(newPlayerX)
+
+	ballWidth, ballHeight := g.ball.Size()
+	ballX := g.ball.getX()
+	centerBallX := ballX + float64(ballWidth)/2
+	ballY := g.ball.getY()
+	if g.playerPaddle.isPointInBoundaries(centerBallX, ballY+float64(ballHeight)) || g.botPaddle.isPointInBoundaries(centerBallX, ballY) {
+		g.ball.velocity.setX(g.ball.velocity.getX() * -1)
+		g.ball.velocity.setY(g.ball.velocity.getY() * -1)
+	} else if ballX < 0 || ballX+float64(ballWidth) > float64(windowWidth) {
+		g.ball.velocity.setX(g.ball.velocity.getX() * -1)
+	} else if ballY < 0 || ballY+float64(ballHeight) > float64(windowHeight) {
+		g.ball.velocity.setY(g.ball.velocity.getY() * -1)
+	}
+	g.ball.setX(ballX + g.ball.velocity.getX())
+	g.ball.setY(ballY + g.ball.velocity.getY())
 
 	return nil
 }
