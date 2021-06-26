@@ -22,6 +22,10 @@ func (g *game) Draw(screen *ebiten.Image) {
 	botPaddleOp := &ebiten.DrawImageOptions{}
 	botPaddleOp.GeoM.Translate(g.botPaddle.x, g.botPaddle.y)
 	screen.DrawImage(g.botPaddle.Image, botPaddleOp)
+
+	playerPaddleOp := &ebiten.DrawImageOptions{}
+	playerPaddleOp.GeoM.Translate(g.playerPaddle.x, g.playerPaddle.y)
+	screen.DrawImage(g.playerPaddle.Image, playerPaddleOp)
 }
 
 func (g *game) Layout(outsideWidth, outsideHeight int) (int, int) {
@@ -31,8 +35,8 @@ func (g *game) Layout(outsideWidth, outsideHeight int) (int, int) {
 func (g *game) init() {
 	ebiten.SetWindowSize(g.screenWidth, g.screenHeight)
 	ebiten.SetWindowTitle("Tennis game")
-	g.botPaddle = newPaddle(float64(g.screenWidth)/2, 0)
-	g.playerPaddle = newPaddle(float64(g.screenWidth)/2, float64(g.screenHeight)-float64(paddleHeight))
+	g.botPaddle = newPaddle(float64(g.screenWidth)/2-float64(paddleWidth)/2, 0)
+	g.playerPaddle = newPaddle(float64(g.screenWidth)/2-float64(paddleWidth)/2, float64(g.screenHeight)-float64(paddleHeight))
 }
 
 type Config struct {
