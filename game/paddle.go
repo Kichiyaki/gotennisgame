@@ -3,7 +3,6 @@ package game
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"image/color"
-	"sync"
 )
 
 const (
@@ -20,39 +19,15 @@ var paddleColor = color.RGBA{
 
 type paddle struct {
 	*ebiten.Image
-	mu sync.Mutex
-	x  float64
-	y  float64
+	*coords
 }
 
 func newPaddle(x, y float64) *paddle {
 	return &paddle{
 		Image: newRectangle(paddleWidth, paddleHeight, paddleColor),
-		x:     x,
-		y:     y,
+		coords: &coords{
+			x: x,
+			y: y,
+		},
 	}
-}
-
-func (p *paddle) getX() float64 {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	return p.x
-}
-
-func (p *paddle) setX(x float64) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	p.x = x
-}
-
-func (p *paddle) getY() float64 {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	return p.y
-}
-
-func (p *paddle) setY(y float64) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	p.y = y
 }

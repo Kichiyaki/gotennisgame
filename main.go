@@ -14,13 +14,15 @@ const (
 )
 
 func main() {
-	if err := ebiten.RunGame(
-		game.New(game.Config{
-			ScreenWidth:  screenWidth,
-			ScreenHeight: screenHeight,
-			GameName:     gameName,
-		}),
-	); err != nil {
+	g, err := game.New(game.Config{
+		ScreenWidth:  screenWidth,
+		ScreenHeight: screenHeight,
+		GameName:     gameName,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}
 }

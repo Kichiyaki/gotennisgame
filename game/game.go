@@ -2,6 +2,7 @@ package game
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/pkg/errors"
 	"image/color"
 )
 
@@ -17,28 +18,40 @@ type game struct {
 	screenHeight int
 	playerPaddle *paddle
 	botPaddle    *paddle
+	ball         *ball
 }
 
-func New(cfg Config) ebiten.Game {
+func New(cfg Config) (ebiten.Game, error) {
 	g := &game{
 		screenHeight: cfg.ScreenHeight,
 		screenWidth:  cfg.ScreenWidth,
 		gameName:     cfg.GameName,
 	}
-	g.init()
-	return g
+	err := g.init()
+	return g, err
 }
 
-func (g *game) init() {
+func (g *game) init() error {
+	var err error
+
 	ebiten.SetWindowSize(g.screenWidth, g.screenHeight)
 	ebiten.SetWindowTitle(g.gameName)
+
 	g.botPaddle = newPaddle(float64(g.screenWidth)/2-float64(paddleWidth)/2, 0)
 	g.playerPaddle = newPaddle(float64(g.screenWidth)/2-float64(paddleWidth)/2, float64(g.screenHeight)-float64(paddleHeight))
+
+	g.ball, err = newBall(float64(g.screenWidth)/2, float64(g.screenHeight)/2)
+	if err != nil {
+		return errors.Wrap(err, "couldn't initialize the game")
+	}
+
+	return nil
 }
 
 func (g *game) Update() error {
-	cursorX, _ := ebiten.CursorPosition()
 	windowWidth, _ := ebiten.WindowSize()
+
+	cursorX, _ := ebiten.CursorPosition()
 	newPlayerX := float64(cursorX) - float64(paddleWidth)/2
 	if newPlayerX < 0 {
 		newPlayerX = 0
@@ -46,6 +59,7 @@ func (g *game) Update() error {
 		newPlayerX = float64(windowWidth) - float64(paddleWidth)
 	}
 	g.playerPaddle.setX(newPlayerX)
+
 	return nil
 }
 
@@ -58,6 +72,10 @@ func (g *game) Draw(screen *ebiten.Image) {
 	playerPaddleOp := &ebiten.DrawImageOptions{}
 	playerPaddleOp.GeoM.Translate(g.playerPaddle.getX(), g.playerPaddle.getY())
 	screen.DrawImage(g.playerPaddle.Image, playerPaddleOp)
+
+	ballOp := &ebiten.DrawImageOptions{}
+	ballOp.GeoM.Translate(g.ball.getX(), g.ball.getY())
+	screen.DrawImage(g.ball.Image, ballOp)
 }
 
 func (g *game) Layout(outsideWidth, outsideHeight int) (int, int) {
