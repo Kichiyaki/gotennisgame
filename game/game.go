@@ -86,17 +86,16 @@ func (g *game) updateBallPosition() {
 
 func (g *game) Draw(screen *ebiten.Image) {
 	screen.Fill(color.RGBA{})
-	botPaddleOp := &ebiten.DrawImageOptions{}
-	botPaddleOp.GeoM.Translate(g.botPaddle.getX(), g.botPaddle.getY())
-	screen.DrawImage(g.botPaddle.Image, botPaddleOp)
 
-	playerPaddleOp := &ebiten.DrawImageOptions{}
-	playerPaddleOp.GeoM.Translate(g.playerPaddle.getX(), g.playerPaddle.getY())
-	screen.DrawImage(g.playerPaddle.Image, playerPaddleOp)
-
-	ballOp := &ebiten.DrawImageOptions{}
-	ballOp.GeoM.Translate(g.ball.getX(), g.ball.getY())
-	screen.DrawImage(g.ball.Image, ballOp)
+	for _, toRender := range []renderable{
+		g.botPaddle,
+		g.playerPaddle,
+		g.ball,
+	} {
+		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Translate(toRender.getX(), toRender.getY())
+		screen.DrawImage(toRender.getImage(), op)
+	}
 }
 
 func (g *game) Layout(outsideWidth, outsideHeight int) (int, int) {

@@ -1,7 +1,6 @@
 package game
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
 	"image/color"
 )
 
@@ -18,20 +17,17 @@ var paddleColor = color.RGBA{
 }
 
 type paddle struct {
-	*ebiten.Image
-	*coords
+	*renderableEntity
 }
 
 func newPaddle(x, y float64) *paddle {
 	return &paddle{
-		Image: newRectangle(paddleWidth, paddleHeight, paddleColor),
-		coords: &coords{
-			x: x,
-			y: y,
+		&renderableEntity{
+			Image: newRectangle(paddleWidth, paddleHeight, paddleColor),
+			coords: &coords{
+				x: x,
+				y: y,
+			},
 		},
 	}
-}
-
-func (p *paddle) isPointInBoundaries(x, y float64) bool {
-	return y > p.getY() && y < p.getY()+paddleHeight && x > p.getX() && x < p.getX()+paddleWidth
 }

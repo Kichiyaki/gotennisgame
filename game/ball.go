@@ -12,8 +12,7 @@ const (
 )
 
 type ball struct {
-	*ebiten.Image
-	*coords
+	*renderableEntity
 	velocity *velocity
 }
 
@@ -23,10 +22,12 @@ func newBall(x, y float64) (*ball, error) {
 		return nil, errors.Wrap(err, "couldn't load ball img")
 	}
 	return &ball{
-		Image: ebiten.NewImageFromImage(ballImg),
-		coords: &coords{
-			x: x,
-			y: y,
+		renderableEntity: &renderableEntity{
+			Image: ebiten.NewImageFromImage(ballImg),
+			coords: &coords{
+				x: x,
+				y: y,
+			},
 		},
 		velocity: &velocity{
 			&coords{
