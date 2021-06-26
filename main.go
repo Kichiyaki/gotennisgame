@@ -15,8 +15,8 @@ const (
 
 func main() {
 	g, err := game.New(game.Config{
-		ScreenWidth:  screenWidth,
-		ScreenHeight: screenHeight,
+		WindowWidth:  screenWidth,
+		WindowHeight: screenHeight,
 		GameName:     gameName,
 	})
 	if err != nil {

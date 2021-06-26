@@ -8,14 +8,14 @@ import (
 
 type Config struct {
 	GameName     string
-	ScreenWidth  int
-	ScreenHeight int
+	WindowWidth  int
+	WindowHeight int
 }
 
 type game struct {
 	gameName     string
-	screenWidth  int
-	screenHeight int
+	windowWidth  int
+	windowHeight int
 	playerPaddle *paddle
 	botPaddle    *paddle
 	ball         *ball
@@ -23,8 +23,8 @@ type game struct {
 
 func New(cfg Config) (ebiten.Game, error) {
 	g := &game{
-		screenHeight: cfg.ScreenHeight,
-		screenWidth:  cfg.ScreenWidth,
+		windowHeight: cfg.WindowHeight,
+		windowWidth:  cfg.WindowWidth,
 		gameName:     cfg.GameName,
 	}
 	err := g.init()
@@ -34,13 +34,13 @@ func New(cfg Config) (ebiten.Game, error) {
 func (g *game) init() error {
 	var err error
 
-	ebiten.SetWindowSize(g.screenWidth, g.screenHeight)
+	ebiten.SetWindowSize(g.windowWidth, g.windowHeight)
 	ebiten.SetWindowTitle(g.gameName)
 
-	g.botPaddle = newPaddle(float64(g.screenWidth)/2-float64(paddleWidth)/2, 0)
-	g.playerPaddle = newPaddle(float64(g.screenWidth)/2-float64(paddleWidth)/2, float64(g.screenHeight)-float64(paddleHeight))
+	g.botPaddle = newPaddle(float64(g.windowWidth)/2-float64(paddleWidth)/2, 0)
+	g.playerPaddle = newPaddle(float64(g.windowWidth)/2-float64(paddleWidth)/2, float64(g.windowHeight)-float64(paddleHeight))
 
-	g.ball, err = newBall(float64(g.screenWidth)/2, float64(g.screenHeight)/2)
+	g.ball, err = newBall(float64(g.windowWidth)/2, float64(g.windowHeight)/2)
 	if err != nil {
 		return errors.Wrap(err, "couldn't initialize the game")
 	}
@@ -94,5 +94,5 @@ func (g *game) Draw(screen *ebiten.Image) {
 }
 
 func (g *game) Layout(outsideWidth, outsideHeight int) (int, int) {
-	return g.screenWidth, g.screenHeight
+	return g.windowWidth, g.windowHeight
 }
