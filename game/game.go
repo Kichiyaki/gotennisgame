@@ -85,16 +85,19 @@ func (g *game) updatePlayerPaddlePosition() {
 
 func (g *game) updateBotPaddlePosition() {
 	windowWidth, _ := ebiten.WindowSize()
-	newBotX := g.botPaddle.getX() + g.botPaddle.speed.getX()
+
 	paddleWidth, _ := g.playerPaddle.Size()
-	if newBotX > g.ball.getX() {
+	newBotX := g.botPaddle.getX() + g.botPaddle.speed.getX()
+	if newBotX+float64(paddleWidth)/2 > g.ball.getMidX() {
 		newBotX -= g.botPaddle.speed.getX() * 2
 	}
+
 	if newBotX < 0 {
 		newBotX = 0
 	} else if newBotX+float64(paddleWidth) > float64(windowWidth) {
 		newBotX = float64(windowWidth) - float64(paddleWidth)
 	}
+
 	g.botPaddle.setX(newBotX)
 }
 
@@ -145,8 +148,8 @@ func (g *game) drawScore(screen *ebiten.Image) {
 	_, windowHeight := ebiten.WindowSize()
 	normalFont := g.font.GetNormal()
 	uppercaseHeight := normalFont.Metrics().CapHeight.Floor() * -1
-	text.Draw(screen, fmt.Sprintf("Bot: %d", g.score.getBotScore()), normalFont, 10, uppercaseHeight*2, color.White)
-	text.Draw(screen, fmt.Sprintf("Player: %d", g.score.getPlayerScore()), normalFont, 10, windowHeight-uppercaseHeight, color.White)
+	text.Draw(screen, fmt.Sprintf("Bot: %d", g.score.getBotScore()), normalFont, 10, uppercaseHeight*3, color.White)
+	text.Draw(screen, fmt.Sprintf("Player: %d", g.score.getPlayerScore()), normalFont, 10, windowHeight-uppercaseHeight*2, color.White)
 }
 
 func (g *game) drawNet(screen *ebiten.Image) {
