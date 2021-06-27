@@ -4,7 +4,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/pkg/errors"
 
-	"github.com/Kichiyaki/gotennisgame/game/assets"
+	"github.com/Kichiyaki/gotennisgame/game/asset"
 )
 
 const (
@@ -17,7 +17,7 @@ type ball struct {
 }
 
 func newBall(x, y float64) (*ball, error) {
-	ballImg, err := assets.GetBallImg()
+	ballImg, err := asset.GetBallImg()
 	if err != nil {
 		return nil, errors.Wrap(err, "couldn't load the ball img")
 	}

@@ -1,9 +1,13 @@
 package game
 
 import (
+	"fmt"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/pkg/errors"
 	"image/color"
+
+	"github.com/Kichiyaki/gotennisgame/game/asset"
 )
 
 type Config struct {
@@ -19,6 +23,8 @@ type game struct {
 	playerPaddle *paddle
 	botPaddle    *paddle
 	ball         *ball
+	score        *score
+	font         asset.Font
 }
 
 func New(cfg Config) (ebiten.Game, error) {
@@ -26,6 +32,7 @@ func New(cfg Config) (ebiten.Game, error) {
 		windowHeight: cfg.WindowHeight,
 		windowWidth:  cfg.WindowWidth,
 		gameName:     cfg.GameName,
+		score:        &score{},
 	}
 	err := g.init()
 	return g, err
@@ -33,6 +40,11 @@ func New(cfg Config) (ebiten.Game, error) {
 
 func (g *game) init() error {
 	var err error
+
+	g.font, err = asset.NewFont()
+	if err != nil {
+		return errors.Wrap(err, "couldn't initialize the game")
+	}
 
 	ebiten.SetWindowSize(g.windowWidth, g.windowHeight)
 	ebiten.SetWindowTitle(g.gameName)
@@ -83,21 +95,31 @@ func (g *game) updateBotPaddlePosition() {
 
 func (g *game) updateBallPosition() {
 	windowWidth, windowHeight := ebiten.WindowSize()
+	resetPosition := false
 	if g.playerPaddle.isPointInBoundaries(g.ball.getMidX(), g.ball.getBottomY()) || g.botPaddle.isPointInBoundaries(g.ball.getMidX(), g.ball.getY()) {
 		g.ball.speed.setY(g.ball.speed.getY() * -1)
 	} else if g.ball.getX() < 0 || g.ball.getRightX() > float64(windowWidth) {
 		g.ball.speed.setX(g.ball.speed.getX() * -1)
-	} else if g.ball.getY() < paddleHeight || g.ball.getBottomY() > float64(windowHeight)-paddleHeight {
+	} else if g.ball.getY() < paddleHeight {
+		g.score.addToPlayerScore(1)
+		resetPosition = true
+	} else if g.ball.getBottomY() > float64(windowHeight)-paddleHeight {
+		g.score.addToBotScore(1)
+		resetPosition = true
+	}
+
+	if resetPosition {
 		g.ball.resetPosition()
 		g.botPaddle.resetPosition()
 		g.playerPaddle.resetPosition()
 	}
+
 	g.ball.setX(g.ball.getX() + g.ball.speed.getX())
 	g.ball.setY(g.ball.getY() + g.ball.speed.getY())
 }
 
 func (g *game) Draw(screen *ebiten.Image) {
-	screen.Fill(color.RGBA{})
+	screen.Fill(color.Black)
 
 	for _, toRender := range []renderable{
 		g.botPaddle,
@@ -108,6 +130,16 @@ func (g *game) Draw(screen *ebiten.Image) {
 		op.GeoM.Translate(toRender.getX(), toRender.getY())
 		screen.DrawImage(toRender.getImage(), op)
 	}
+
+	g.drawScore(screen)
+}
+
+func (g *game) drawScore(screen *ebiten.Image) {
+	_, windowHeight := ebiten.WindowSize()
+	normalFont := g.font.GetNormal()
+	uppercaseHeight := normalFont.Metrics().CapHeight.Floor() * -1
+	text.Draw(screen, fmt.Sprintf("Bot: %d", g.score.getBotScore()), normalFont, 10, uppercaseHeight*2, color.White)
+	text.Draw(screen, fmt.Sprintf("Player: %d", g.score.getPlayerScore()), normalFont, 10, windowHeight-uppercaseHeight, color.White)
 }
 
 func (g *game) Layout(outsideWidth, outsideHeight int) (int, int) {
