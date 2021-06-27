@@ -1,6 +1,6 @@
 ![gif](/screenshots/game.gif?raw=true)
 
-A simple game written in Go using [Ebiten](https://ebiten.org).
+A simple game written in Go and [Ebiten](https://ebiten.org).
 
 ## License
 
