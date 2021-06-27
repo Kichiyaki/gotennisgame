@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/pkg/errors"
 	"image/color"
@@ -121,6 +122,9 @@ func (g *game) updateBallPosition() {
 func (g *game) Draw(screen *ebiten.Image) {
 	screen.Fill(color.Black)
 
+	g.drawNet(screen)
+	g.drawScore(screen)
+
 	for _, toRender := range []renderable{
 		g.botPaddle,
 		g.playerPaddle,
@@ -130,8 +134,6 @@ func (g *game) Draw(screen *ebiten.Image) {
 		op.GeoM.Translate(toRender.getX(), toRender.getY())
 		screen.DrawImage(toRender.getImage(), op)
 	}
-
-	g.drawScore(screen)
 }
 
 func (g *game) drawScore(screen *ebiten.Image) {
@@ -140,6 +142,16 @@ func (g *game) drawScore(screen *ebiten.Image) {
 	uppercaseHeight := normalFont.Metrics().CapHeight.Floor() * -1
 	text.Draw(screen, fmt.Sprintf("Bot: %d", g.score.getBotScore()), normalFont, 10, uppercaseHeight*2, color.White)
 	text.Draw(screen, fmt.Sprintf("Player: %d", g.score.getPlayerScore()), normalFont, 10, windowHeight-uppercaseHeight, color.White)
+}
+
+func (g *game) drawNet(screen *ebiten.Image) {
+	windowWidth, windowHeight := ebiten.WindowSize()
+	rectWidth := float64(windowWidth) / 19
+	rectHeight := float64(windowHeight) / 50
+
+	for i := 0.0; i <= float64(windowWidth); i += rectWidth * 2 {
+		ebitenutil.DrawRect(screen, i, float64(windowHeight)/2-float64(rectHeight)/2, rectWidth, rectHeight, color.White)
+	}
 }
 
 func (g *game) Layout(outsideWidth, outsideHeight int) (int, int) {
