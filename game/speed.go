@@ -1,5 +1,5 @@
 package game
 
-type velocity struct {
+type speed struct {
 	*coords
 }

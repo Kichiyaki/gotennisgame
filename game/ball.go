@@ -8,18 +8,18 @@ import (
 )
 
 const (
-	defaultBallVelocity = 2
+	ballMoveSpeed = 3
 )
 
 type ball struct {
 	*renderableEntity
-	velocity *velocity
+	speed *speed
 }
 
 func newBall(x, y float64) (*ball, error) {
 	ballImg, err := assets.GetBallImg()
 	if err != nil {
-		return nil, errors.Wrap(err, "couldn't load ball img")
+		return nil, errors.Wrap(err, "couldn't load the ball img")
 	}
 	return &ball{
 		renderableEntity: &renderableEntity{
@@ -27,11 +27,8 @@ func newBall(x, y float64) (*ball, error) {
 			coords:       newCoords(x, y),
 			initPosition: newCoords(x, y),
 		},
-		velocity: &velocity{
-			&coords{
-				x: defaultBallVelocity,
-				y: defaultBallVelocity,
-			},
+		speed: &speed{
+			newCoords(ballMoveSpeed, ballMoveSpeed),
 		},
 	}, nil
 }
