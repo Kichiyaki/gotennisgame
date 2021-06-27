@@ -10,12 +10,7 @@ const (
 	paddleComputerMoveSpeed = 3
 )
 
-var paddleColor = color.RGBA{
-	R: 255,
-	G: 255,
-	B: 255,
-	A: 255,
-}
+var paddleColor = color.White
 
 type paddle struct {
 	*renderableEntity
