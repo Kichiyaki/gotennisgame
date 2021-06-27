@@ -68,12 +68,11 @@ func (g *game) updatePlayerPosition() {
 
 func (g *game) updateBallPosition() {
 	windowWidth, windowHeight := ebiten.WindowSize()
-	ballWidth, ballHeight := g.ball.Size()
-	if g.playerPaddle.isPointInBoundaries(g.ball.getMidX(), g.ball.getY()+float64(ballHeight)) || g.botPaddle.isPointInBoundaries(g.ball.getMidX(), g.ball.getY()) {
+	if g.playerPaddle.isPointInBoundaries(g.ball.getMidX(), g.ball.getBottomY()) || g.botPaddle.isPointInBoundaries(g.ball.getMidX(), g.ball.getY()) {
 		g.ball.velocity.setY(g.ball.velocity.getY() * -1)
-	} else if g.ball.getX() < 0 || g.ball.getX()+float64(ballWidth) > float64(windowWidth) {
+	} else if g.ball.getX() < 0 || g.ball.getRightX() > float64(windowWidth) {
 		g.ball.velocity.setX(g.ball.velocity.getX() * -1)
-	} else if g.ball.getY() < 0 || g.ball.getY()+float64(ballHeight) > float64(windowHeight) {
+	} else if g.ball.getY() < paddleHeight || g.ball.getBottomY() > float64(windowHeight)-paddleHeight {
 		g.ball.resetPosition()
 		g.botPaddle.resetPosition()
 		g.playerPaddle.resetPosition()
