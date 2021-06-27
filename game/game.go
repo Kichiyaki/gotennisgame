@@ -69,18 +69,17 @@ func (g *game) updatePlayerPosition() {
 func (g *game) updateBallPosition() {
 	windowWidth, windowHeight := ebiten.WindowSize()
 	ballWidth, ballHeight := g.ball.Size()
-	ballX := g.ball.getX()
-	centerBallX := ballX + float64(ballWidth)/2
-	ballY := g.ball.getY()
-	if g.playerPaddle.isPointInBoundaries(centerBallX, ballY+float64(ballHeight)) || g.botPaddle.isPointInBoundaries(centerBallX, ballY) {
+	if g.playerPaddle.isPointInBoundaries(g.ball.getMidX(), g.ball.getY()+float64(ballHeight)) || g.botPaddle.isPointInBoundaries(g.ball.getMidX(), g.ball.getY()) {
 		g.ball.velocity.setY(g.ball.velocity.getY() * -1)
-	} else if ballX < 0 || ballX+float64(ballWidth) > float64(windowWidth) {
+	} else if g.ball.getX() < 0 || g.ball.getX()+float64(ballWidth) > float64(windowWidth) {
 		g.ball.velocity.setX(g.ball.velocity.getX() * -1)
-	} else if ballY < 0 || ballY+float64(ballHeight) > float64(windowHeight) {
-		g.ball.velocity.setY(g.ball.velocity.getY() * -1)
+	} else if g.ball.getY() < 0 || g.ball.getY()+float64(ballHeight) > float64(windowHeight) {
+		g.ball.resetPosition()
+		g.botPaddle.resetPosition()
+		g.playerPaddle.resetPosition()
 	}
-	g.ball.setX(ballX + g.ball.velocity.getX())
-	g.ball.setY(ballY + g.ball.velocity.getY())
+	g.ball.setX(g.ball.getX() + g.ball.velocity.getX())
+	g.ball.setY(g.ball.getY() + g.ball.velocity.getY())
 }
 
 func (g *game) Draw(screen *ebiten.Image) {

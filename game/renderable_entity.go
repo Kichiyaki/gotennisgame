@@ -19,11 +19,33 @@ func (r *renderableEntity) getImage() *ebiten.Image {
 }
 
 func (r *renderableEntity) isPointInBoundaries(x, y float64) bool {
-	entityWidth, entityHeight := r.Size()
-	return y > r.getY() && y < r.getY()+float64(entityHeight) && x > r.getX() && x < r.getX()+float64(entityWidth)
+	return y > r.getY() && y < r.getBottomY() && x > r.getX() && x < r.getRightX()
 }
 
 func (r *renderableEntity) resetPosition() {
 	r.setX(r.initPosition.getX())
 	r.setY(r.initPosition.getY())
+}
+
+func (r *renderableEntity) getLeftX() float64 {
+	return r.getX()
+}
+
+func (r *renderableEntity) getMidX() float64 {
+	width, _ := r.Size()
+	return r.getX() + float64(width)/2
+}
+
+func (r *renderableEntity) getRightX() float64 {
+	width, _ := r.Size()
+	return r.getX() + float64(width)
+}
+
+func (r *renderableEntity) getTopY() float64 {
+	return r.getY()
+}
+
+func (r *renderableEntity) getBottomY() float64 {
+	_, height := r.Size()
+	return r.getY() + float64(height)
 }
