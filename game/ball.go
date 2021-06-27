@@ -23,11 +23,9 @@ func newBall(x, y float64) (*ball, error) {
 	}
 	return &ball{
 		renderableEntity: &renderableEntity{
-			Image: ebiten.NewImageFromImage(ballImg),
-			coords: &coords{
-				x: x,
-				y: y,
-			},
+			Image:        ebiten.NewImageFromImage(ballImg),
+			coords:       newCoords(x, y),
+			initPosition: newCoords(x, y),
 		},
 		velocity: &velocity{
 			&coords{

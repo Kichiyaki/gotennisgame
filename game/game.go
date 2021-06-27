@@ -73,7 +73,6 @@ func (g *game) updateBallPosition() {
 	centerBallX := ballX + float64(ballWidth)/2
 	ballY := g.ball.getY()
 	if g.playerPaddle.isPointInBoundaries(centerBallX, ballY+float64(ballHeight)) || g.botPaddle.isPointInBoundaries(centerBallX, ballY) {
-		g.ball.velocity.setX(g.ball.velocity.getX() * -1)
 		g.ball.velocity.setY(g.ball.velocity.getY() * -1)
 	} else if ballX < 0 || ballX+float64(ballWidth) > float64(windowWidth) {
 		g.ball.velocity.setX(g.ball.velocity.getX() * -1)

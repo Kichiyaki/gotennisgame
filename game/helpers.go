@@ -6,7 +6,7 @@ import (
 )
 
 func newRectangle(width, height int, c color.Color) *ebiten.Image {
-	img := ebiten.NewImage(paddleWidth, paddleHeight)
-	img.Fill(paddleColor)
+	img := ebiten.NewImage(width, height)
+	img.Fill(c)
 	return img
 }

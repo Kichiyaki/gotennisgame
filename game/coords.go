@@ -8,6 +8,13 @@ type coords struct {
 	y  float64
 }
 
+func newCoords(x, y float64) *coords {
+	return &coords{
+		x: x,
+		y: y,
+	}
+}
+
 func (c *coords) getX() float64 {
 	c.mu.Lock()
 	defer c.mu.Unlock()

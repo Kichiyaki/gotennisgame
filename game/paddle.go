@@ -23,11 +23,9 @@ type paddle struct {
 func newPaddle(x, y float64) *paddle {
 	return &paddle{
 		&renderableEntity{
-			Image: newRectangle(paddleWidth, paddleHeight, paddleColor),
-			coords: &coords{
-				x: x,
-				y: y,
-			},
+			Image:        newRectangle(paddleWidth, paddleHeight, paddleColor),
+			coords:       newCoords(x, y),
+			initPosition: newCoords(x, y),
 		},
 	}
 }
