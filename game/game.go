@@ -50,8 +50,10 @@ func (g *game) init() error {
 	ebiten.SetWindowSize(g.windowWidth, g.windowHeight)
 	ebiten.SetWindowTitle(g.gameName)
 
-	g.botPaddle = newPaddle(float64(g.windowWidth)/2-float64(paddleWidth)/2, 0)
-	g.playerPaddle = newPaddle(float64(g.windowWidth)/2-float64(paddleWidth)/2, float64(g.windowHeight)-float64(paddleHeight))
+	paddleWidth := g.windowWidth / 6
+	paddleHeight := g.windowHeight / 32
+	g.botPaddle = newPaddle(float64(g.windowWidth)/2-float64(paddleWidth)/2, 0, paddleWidth, paddleHeight)
+	g.playerPaddle = newPaddle(float64(g.windowWidth)/2-float64(paddleWidth)/2, float64(g.windowHeight)-float64(paddleHeight), paddleWidth, paddleHeight)
 
 	g.ball, err = newBall(float64(g.windowWidth)/2, float64(g.windowHeight)/2)
 	if err != nil {
@@ -71,6 +73,7 @@ func (g *game) Update() error {
 func (g *game) updatePlayerPaddlePosition() {
 	windowWidth, _ := ebiten.WindowSize()
 	cursorX, _ := ebiten.CursorPosition()
+	paddleWidth, _ := g.playerPaddle.Size()
 	newPlayerX := float64(cursorX) - float64(paddleWidth)/2
 	if newPlayerX < 0 {
 		newPlayerX = 0
@@ -83,6 +86,7 @@ func (g *game) updatePlayerPaddlePosition() {
 func (g *game) updateBotPaddlePosition() {
 	windowWidth, _ := ebiten.WindowSize()
 	newBotX := g.botPaddle.getX() + g.botPaddle.speed.getX()
+	paddleWidth, _ := g.playerPaddle.Size()
 	if newBotX > g.ball.getX() {
 		newBotX -= g.botPaddle.speed.getX() * 2
 	}
@@ -97,14 +101,15 @@ func (g *game) updateBotPaddlePosition() {
 func (g *game) updateBallPosition() {
 	windowWidth, windowHeight := ebiten.WindowSize()
 	resetPosition := false
+	_, paddleHeight := g.playerPaddle.Size()
 	if g.playerPaddle.isPointInBoundaries(g.ball.getMidX(), g.ball.getBottomY()) || g.botPaddle.isPointInBoundaries(g.ball.getMidX(), g.ball.getY()) {
 		g.ball.speed.setY(g.ball.speed.getY() * -1)
 	} else if g.ball.getX() < 0 || g.ball.getRightX() > float64(windowWidth) {
 		g.ball.speed.setX(g.ball.speed.getX() * -1)
-	} else if g.ball.getY() < paddleHeight {
+	} else if g.ball.getY() < float64(paddleHeight) {
 		g.score.addToPlayerScore(1)
 		resetPosition = true
-	} else if g.ball.getBottomY() > float64(windowHeight)-paddleHeight {
+	} else if g.ball.getBottomY() > float64(windowHeight)-float64(paddleHeight) {
 		g.score.addToBotScore(1)
 		resetPosition = true
 	}

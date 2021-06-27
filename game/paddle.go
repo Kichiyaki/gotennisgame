@@ -5,8 +5,6 @@ import (
 )
 
 const (
-	paddleWidth             = 100
-	paddleHeight            = 20
 	paddleComputerMoveSpeed = 3
 )
 
@@ -17,10 +15,10 @@ type paddle struct {
 	speed *speed
 }
 
-func newPaddle(x, y float64) *paddle {
+func newPaddle(x, y float64, width, height int) *paddle {
 	return &paddle{
 		renderableEntity: &renderableEntity{
-			Image:        newRectangle(paddleWidth, paddleHeight, paddleColor),
+			Image:        newRectangle(width, height, paddleColor),
 			coords:       newCoords(x, y),
 			initPosition: newCoords(x, y),
 		},
